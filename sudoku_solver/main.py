@@ -19,12 +19,12 @@ def replace_zeros(grid: list[list[int]]) -> list[list[int | set[int]]]:
     return new_grid
 
 
-def calculate_certainties(
+def process_cells(
     grid: list[list[int | set[int]]],
 ) -> tuple[list[list[int | set[int]]], bool]:
     """
-    Calculate all values that are certain and do not require guessing.
-    Returns the new_grid and along with a boolean indicating if any changes were made.
+    Process individual cells and calculate all values that are certain and do not require guessing.
+    Return the new_grid along with a boolean indicating if any changes were made.
     """
     new_grid: list[list[int | set[int]]] = deepcopy(grid)
     modified = False
@@ -64,13 +64,28 @@ def calculate_certainties(
     return new_grid, modified
 
 
+def process_rows(
+    grid: list[list[int | set[int]]],
+) -> tuple[list[list[int | set[int]]], bool]:
+    """
+    Process rows and calculate all values that are certain and do not require guessing.
+    Return the new_grid along with a boolean indicating if any changes were made.
+    """
+    for row_index in range(9):
+        row = get_row(grid, row_index)
+
+        for value in POSSIBLE_VALUES:
+            if value in row:
+                continue
+
+
 def solve(input_grid: Any) -> list[list[int]]:
     validated_input_grid: list[list[int]] = validate_input(input_grid)
 
     grid: list[list[int | set[int]]] = replace_zeros(validated_input_grid)
 
     while True:
-        grid, modified = calculate_certainties(grid)
+        grid, modified = process_cells(grid)
 
         if not modified:
             break
